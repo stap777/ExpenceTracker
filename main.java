@@ -1,6 +1,6 @@
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.Scanner;
 
 
@@ -59,14 +59,91 @@ class ExpenceManager {
 
     void viewExpence(Scanner sc) {
 
-        if (!expences.isEmpty()) {
-            for (int i = 0; i < expences.size(); i++) {
-                System.out.println(i + 1 + ")" + expences.get(i));
+        while (true) {
+            if (!expences.isEmpty()) {
+                for (int i = 0; i < expences.size(); i++) {
+                    System.out.println(i + 1 + ")" + expences.get(i));
+                }
+            }
+
+            else {
+                System.out.println("empty");
+            }
+
+            System.out.println(expences.size() + 1 + ") to Search(title)" );
+
+            System.out.println(expences.size() + 2 + ") to filter" );
+
+            System.out.println("(-1) to Exit" );
+
+            int c = 0;
+            while (true) {
+                try {
+                    c = sc.nextInt();
+                    sc.nextLine();
+                    break;
+                }
+                catch (Exception e) {
+                    System.out.println("invalid input");
+                    sc.nextLine();
+                }
+            }
+        
+
+            if (c == expences.size() + 1) {
+                System.out.println("title: ");
+                String s = "";
+                while (true) {
+                    try {
+                        s = sc.nextLine();
+                        break;
+                    }
+                    catch (Exception e) {
+                        System.out.println("invalid input");
+                        sc.nextLine();
+                    }
+                }
+
+                boolean isvalid = false;
+                for (int i = 0; i < expences.size(); i++) {
+                    if (expences.get(i).discription.equalsIgnoreCase(s)) {
+                        System.out.println(expences.get(i));
+                        isvalid = true;
+                        break;
+                    }
+                }
+                if (!isvalid) {
+                    System.out.println("not found");
+                }
+            }
+
+            else if (c == expences.size() + 2) {
+                System.out.println("category");
+                String s = "";
+                while (true) {
+                    try {
+                        s = sc.nextLine();
+                        break;
+                    }
+                    catch (Exception e) {
+                        System.out.println("invalid input");
+                        sc.nextLine();
+                    }
+                }
+                for (int i = 0; i < expences.size(); i++) {
+                    if (expences.get(i).category.equalsIgnoreCase(s)) {
+                        System.out.println(expences.get(i));
+                    }
+                }
+            }
+            else if (c == -1) {
+                break;
+            }
+            else {
+                System.out.println("invalid input");
             }
         }
-        else {
-            System.out.println("empty");
-        }
+
     }
 
     void removeExpence(Scanner sc) {
@@ -86,8 +163,59 @@ class ExpenceManager {
         }
     }
 
+    void totalExpence(Scanner sc) {
+        System.out.println("(1) to calculate Combine total");
 
+        System.out.println("(2) to calculate category wise total");
 
+        int c = 0;
+        while (true) {
+            try {
+                c = sc.nextInt();
+                sc.nextLine();
+                break;
+            }
+            catch (Exception e) {
+                System.out.println("invalid input type");
+                sc.nextLine();
+            }
+        }
+
+        if (c == 1) {
+            double total = 0;
+            for (int i = 0; i < expences.size(); i++) {
+                total += expences.get(i).amount;
+            }
+            System.out.println(total);
+        }
+
+        else if (c == 2) {
+            for (int i = 0; i < expences.size(); i++) {
+                int l = 1;
+                System.out.println(l + expences.get(i).category);
+                l++;
+            }
+            System.out.print("Select category: ");
+            String s = ""; 
+            while (true) {
+                try {
+                    s = sc.nextLine();
+                    break;
+                }
+                catch (Exception e) {
+                    System.out.println("invalid input type");
+                    sc.nextLine();
+                }
+            }
+            double total = 0;
+            for (int i = 0; i < expences.size(); i++) {
+                if (expences.get(i).category.equals(s)) {
+                    total += expences.get(i).amount;
+                }
+            }
+            System.out.println(total);
+        }
+    }
 }
 
 class main {
@@ -103,6 +231,8 @@ class main {
         menu.add("(1) add expence");
         menu.add("(2) view expence");
         menu.add("(3) remove expence");
+        menu.add("(4) Total Expence");
+
 
         
         while (true) {
@@ -123,6 +253,10 @@ class main {
 
             else if (c == 3) {
                 em.removeExpence(sc);
+            }
+
+            else if (c == 4) {
+                em.totalExpence(sc);
             }
 
         }
