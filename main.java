@@ -2,6 +2,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.HashSet;
+
 
 
 class Expences {
@@ -168,6 +170,8 @@ class ExpenceManager {
 
         System.out.println("(2) to calculate category wise total");
 
+        HashSet<String> categories = new HashSet<>();
+
         int c = 0;
         while (true) {
             try {
@@ -186,34 +190,29 @@ class ExpenceManager {
             for (int i = 0; i < expences.size(); i++) {
                 total += expences.get(i).amount;
             }
-            System.out.println(total);
+            System.out.println(" : ₹" + total);
         }
 
         else if (c == 2) {
+            
+
             for (int i = 0; i < expences.size(); i++) {
-                int l = 1;
-                System.out.println(l + expences.get(i).category);
-                l++;
+                categories.add(expences.get(i).category);
             }
-            System.out.print("Select category: ");
-            String s = ""; 
-            while (true) {
-                try {
-                    s = sc.nextLine();
-                    break;
+
+            for (String category : categories) {
+
+                double total = 0;
+
+                for (int i = 0; i < expences.size(); i++) {
+
+                    if (expences.get(i).category.equalsIgnoreCase(category)) {
+                        total += expences.get(i).amount;
+                    }
                 }
-                catch (Exception e) {
-                    System.out.println("invalid input type");
-                    sc.nextLine();
-                }
+
+                System.out.println(category + ": ₹" + total);
             }
-            double total = 0;
-            for (int i = 0; i < expences.size(); i++) {
-                if (expences.get(i).category.equals(s)) {
-                    total += expences.get(i).amount;
-                }
-            }
-            System.out.println(total);
         }
     }
 }
