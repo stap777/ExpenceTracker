@@ -3,6 +3,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.HashSet;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+
 
 
 
@@ -17,6 +22,14 @@ class Expences {
         discription = b;
         category = c;
         timestamp = LocalDateTime.now();
+    }
+
+    public Expences(double a, String b, String c, LocalDateTime timestamp) {
+        this.amount = a;
+        this.discription = b;
+        this.category = c;
+        this.timestamp = timestamp;
+
     }
 
     @Override
@@ -190,7 +203,7 @@ class ExpenceManager {
             for (int i = 0; i < expences.size(); i++) {
                 total += expences.get(i).amount;
             }
-            System.out.println(" : ₹" + total);
+            System.out.println(" : Rs. " + total);
         }
 
         else if (c == 2) {
@@ -211,8 +224,45 @@ class ExpenceManager {
                     }
                 }
 
-                System.out.println(category + ": ₹" + total);
+                System.out.println(category + ": Rs. " + total);
             }
+        }
+    }
+
+    void saveFile() {
+        try {
+            FileWriter fw = new FileWriter("expences.txt");
+
+             for (int i = 0; i < expences.size(); i++) {
+                Expences e = expences.get(i);
+                String line = e.amount + "|" + e.discription + "|" + e.category + "|" + e.timestamp;
+                fw.write(line + "\n");
+            }
+
+            fw.close();
+        }
+        catch (IOException e) {
+            System.out.println("error occured ");
+        }
+        
+
+    }
+
+    void loadFile() {
+        try {
+            BufferedReader bf = new BufferedReader(new FileReader("expences.txt"));
+            String line;
+
+            while ((line = bf.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                double amount = Double.parseDouble(parts[0]);
+                Expences e = new Expences(amount, parts[1], parts[2], LocalDateTime.parse(parts[3]));
+                expences.add(e);
+            }
+            bf.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error occured");
         }
     }
 }
@@ -225,12 +275,15 @@ class main {
 
         ExpenceManager em = new ExpenceManager();
 
+        em.loadFile();
+
         ArrayList<String> menu = new ArrayList<>();
 
         menu.add("(1) add expence");
         menu.add("(2) view expence");
         menu.add("(3) remove expence");
         menu.add("(4) Total Expence");
+        menu.add("(5) Exit");
 
 
         
@@ -256,6 +309,13 @@ class main {
 
             else if (c == 4) {
                 em.totalExpence(sc);
+            }
+            else if (c == 5) {
+                em.saveFile();
+                break;
+            }
+            else {
+                System.out.println("invald input");
             }
 
         }
